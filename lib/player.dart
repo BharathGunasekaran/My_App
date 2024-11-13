@@ -1,28 +1,49 @@
 import 'package:flutter/material.dart';
 
 class BottomPlayerBar extends StatelessWidget {
-  BottomPlayerBar({super.key});
-  
-  final Map<int, bool> isStart = {};
-  
+  final Map<int, bool> isFavorite;
+  final int currentSongIndex;
+  final bool isPlaying;
+  final Function toggleFavorite;
+  final Function playPause;
+  final Function nextSong;
+  final Function previousSong;
+  final String currentSongTitle;
+  final String currentSongArtist;
+
+  const BottomPlayerBar({
+    super.key,
+    required this.isFavorite,
+    required this.currentSongIndex,
+    required this.isPlaying,
+    required this.toggleFavorite,
+    required this.playPause,
+    required this.nextSong,
+    required this.previousSong,
+    required this.currentSongTitle,
+    required this.currentSongArtist,
+  });
+
   @override
   Widget build(BuildContext context) {
+    final bool favorite = isFavorite[currentSongIndex] ?? false;
+
     return Container(
       color: Colors.black87,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Aayiram Jannal Veedu",
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                currentSongTitle,
+                style: const TextStyle(color: Colors.white, fontSize: 16),
               ),
               Text(
-                "Rahul Nambiar",
-                style: TextStyle(color: Colors.grey, fontSize: 14),
+                currentSongArtist,
+                style: const TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ],
           ),
@@ -30,22 +51,34 @@ class BottomPlayerBar extends StatelessWidget {
             children: [
               IconButton(
                 icon: const Icon(Icons.skip_previous, color: Colors.white),
-                onPressed: () {},
+                onPressed: () {
+                  previousSong();
+                },
               ),
               IconButton(
-                icon: const Icon(Icons.play_arrow_rounded,color: Colors.white,),
-                onPressed: (){},
+                icon: Icon(
+                  isPlaying ? Icons.pause : Icons.play_arrow,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  playPause();
+                },
               ),
               IconButton(
                 icon: const Icon(Icons.skip_next, color: Colors.white),
-                onPressed: () {},
+                onPressed: () {
+                  nextSong();
+                },
               ),
               IconButton(
-                onPressed: (){
-                  const Icon(Icons.favorite,color: Colors.red,);
-                }, 
-                icon: const Icon(Icons.favorite_border,color: Colors.white,)
-              )
+                icon: Icon(
+                  favorite ? Icons.favorite : Icons.favorite_border,
+                  color: favorite ? Colors.red : Colors.grey,
+                ),
+                onPressed: () {
+                  toggleFavorite(currentSongIndex);
+                },
+              ),
             ],
           ),
         ],
@@ -53,3 +86,4 @@ class BottomPlayerBar extends StatelessWidget {
     );
   }
 }
+

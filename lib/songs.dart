@@ -19,16 +19,43 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
     {'title': 'Akkam Pakkam', 'artist': 'Sadhana Sargam'},
   ];
 
-  // Track the favorite state for each song
   final Map<int, bool> isFavorite = {};
+  int currentSongIndex = 0;
+  bool isPlaying = false;
+
+  void toggleFavorite(int index) {
+    setState(() {
+      isFavorite[index] = !(isFavorite[index] ?? false);
+    });
+  }
+
+  void playPause() {
+    setState(() {
+      isPlaying = !isPlaying;
+    });
+  }
+
+  void nextSong() {
+    setState(() {
+      currentSongIndex = (currentSongIndex + 1) % songs.length;
+      isPlaying = true; // Automatically play the next song
+    });
+  }
+
+  void previousSong() {
+    setState(() {
+      currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+      isPlaying = true; // Automatically play the previous song
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final currentSong = songs[currentSongIndex];
 
-    child:Scaffold(
+    return Scaffold(
       appBar: AppBar(
-        title: const Text("Music Player",style: TextStyle(color: Colors.white),),
+        title: const Text("Music Player", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
         actions: [
           IconButton(
@@ -38,84 +65,90 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
         ],
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Container(
-        
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: songs.length,
-                itemBuilder: (context, index) {
-                  
-                  final song = songs[index];
-                  final bool favorite = isFavorite[index] ?? false;
-                  
-                  return ListTile(
-                    
-                    leading: const Icon(
-                      Icons.music_note,
-                    ),
-                    title: Text(song['title'] ?? 'Unknown Title'),
-                    subtitle: Text(song['artist'] ?? 'Unknown Artist'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: Icon(
-                            favorite ? Icons.favorite : Icons.favorite_border,
-                            color: favorite ? Colors.red : Colors.grey,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              isFavorite[index] = !favorite;
-                            });
-                          },
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: songs.length,
+              itemBuilder: (context, index) {
+                final song = songs[index];
+                final bool favorite = isFavorite[index] ?? false;
+
+                return ListTile(
+                  leading: const Icon(Icons.music_note),
+                  title: Text(song['title'] ?? 'Unknown Title'),
+                  subtitle: Text(song['artist'] ?? 'Unknown Artist'),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          favorite ? Icons.favorite : Icons.favorite_border,
+                          color: favorite ? Colors.red : Colors.grey,
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.more_vert),
-                          onPressed: () {
-                            // Handle more options click
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return SizedBox(
-                                  height: 150,
-                                  child: Column(
-                                    children: [
-                                      ListTile(
-                                        leading: const Icon(Icons.add),
-                                        title: const Text('Add to Playlist'),
-                                        onTap: () {
-                                          // Add to playlist logic
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const Icon(Icons.info),
-                                        title: const Text('Song Info'),
-                                        onTap: () {
-                                          // Show song info
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                        onPressed: () {
+                          toggleFavorite(index);
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.more_vert),
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return SizedBox(
+                                height: 150,
+                                child: Column(
+                                  children: [
+                                    ListTile(
+                                      leading: const Icon(Icons.add),
+                                      title: const Text('Add to Playlist'),
+                                      onTap: () {},
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(Icons.info),
+                                      title: const Text('Song Info'),
+                                      onTap: () {},
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  onTap: () {
+                    setState(() {
+                      currentSongIndex = index;
+                      isPlaying = true; // Play the selected song
+                    });
+                  },
+                );
+              },
             ),
-            BottomPlayerBar(),
-          ],
-        ),
-        
+          ),
+          BottomPlayerBar(
+            isFavorite: isFavorite,
+            currentSongIndex: currentSongIndex,
+            isPlaying: isPlaying,
+            toggleFavorite: toggleFavorite,
+            playPause: playPause,
+            nextSong: nextSong,
+            previousSong: previousSong,
+            currentSongTitle: currentSong['title'] ?? 'Unknown Title',
+            currentSongArtist: currentSong['artist'] ?? 'Unknown Artist',
+          ),
+        ],
       ),
-      drawer: const Drawer(), // Add the side menu here if necessary
-    ),
-  );
+      drawer: const Drawer(),
+    );
   }
 }
+
+
+
+
+
+
