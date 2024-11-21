@@ -1,5 +1,96 @@
+// import 'package:flutter/material.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+// // import 'player.dart';
+// import 'login.dart';
+
+
+// class MusicPlayerScreen extends StatefulWidget {
+//   const MusicPlayerScreen({super.key});
+
+//   @override
+//   _MusicPlayerScreenState createState() => _MusicPlayerScreenState();
+// }
+
+// class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
+//   final List<Map<String, String>> songs = [
+//     {'title': 'Aayiram Jannal Veedu', 'artist': 'Rahul Nambiar'},
+//     {'title': 'Abhiyum Naanum', 'artist': 'Unknown'},
+//     {'title': 'Adiyae Kolluthey', 'artist': 'Krish, Benny Dayal'},
+//   ];
+
+//   Future<void> logout() async {
+//     final prefs = await SharedPreferences.getInstance();
+//     await prefs.setBool('isLoggedIn', false);
+//     Navigator.pushReplacement(
+//       context,
+//       MaterialPageRoute(builder: (context) => const LoginScreen()),
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text("Music Player", style: TextStyle(color: Colors.white)),
+//         backgroundColor: Colors.white,
+//       ),
+//       drawer: Drawer(
+//         child: Column(
+//           children: [
+//             DrawerHeader(
+//               decoration: const BoxDecoration(color: Colors.black),
+//               child: const Center(
+//                 child: Text(
+//                   'Music',
+//                   style: TextStyle(color: Colors.white, fontSize: 30),
+//                 ),
+//               ),
+//             ),
+//             ListTile(
+//               leading: const Icon(Icons.playlist_play),
+//               title: const Text('Playlist'),
+//               onTap: () {},
+//             ),
+//             ListTile(
+//               leading: const Icon(Icons.info),
+//               title: const Text('About'),
+//               onTap: () {
+//                 showAboutDialog(
+//                   context: context,
+//                   applicationName: 'Music Player',
+//                   applicationVersion: '1.0.0',
+//                 );
+//               },
+//             ),
+//             const Spacer(),
+//             const Divider(),
+//             ListTile(
+//               leading: const Icon(Icons.logout),
+//               title: const Text('Logout'),
+//               onTap: logout,
+//             ),
+//           ],
+//         ),
+//       ),
+//       body: const Center(
+//         child: Text('Music Player Content'),
+//       ),
+//     );
+//   }
+// }
+
+
+
+
+
+
+
+
+
 import 'package:flutter/material.dart';
 import 'package:music/player.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'login.dart';
 
 class MusicPlayerScreen extends StatefulWidget {
   const MusicPlayerScreen({super.key});
@@ -49,13 +140,23 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
     });
   }
 
+  Future<void> logout() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('isLoggedIn', false);
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => const LoginScreen()),
+  );
+}
+
+
   @override
   Widget build(BuildContext context) {
     final currentSong = songs[currentSongIndex];
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Music Player", style: TextStyle(color: Colors.white)),
+        title: const Text("Music", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
         actions: [
           IconButton(
@@ -64,6 +165,44 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
           )
         ],
         iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.black),
+              child: Center(
+                child: Text(
+                  'Music',
+                  style: TextStyle(color: Colors.white, fontSize: 30),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.playlist_play),
+              title: const Text('Playlist'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.info),
+              title: const Text('About'),
+              onTap: () {
+                showAboutDialog(
+                  context: context,
+                  applicationName: 'Music Player',
+                  applicationVersion: '1.0.0',
+                );
+              },
+            ),
+            const Spacer(),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
+              onTap: logout,
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [
@@ -142,7 +281,6 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
           ),
         ],
       ),
-      drawer: const Drawer(),
     );
   }
 }
