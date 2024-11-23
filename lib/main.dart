@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'songs.dart'; // Import the songs.dart file
-
+import 'songs.dart';
 void main() {
   runApp(const MusicPlayerApp());
 }

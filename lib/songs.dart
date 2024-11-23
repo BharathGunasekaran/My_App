@@ -4,7 +4,7 @@ import 'package:just_audio/just_audio.dart';
 import 'player.dart'; 
 
 class MusicPlayerScreen extends StatefulWidget {
-  const MusicPlayerScreen({Key? key}) : super(key: key);
+  const MusicPlayerScreen({super.key});
 
   @override
   _MusicPlayerScreenState createState() => _MusicPlayerScreenState();
@@ -51,22 +51,22 @@ Future<void> playPause() async {
 
   // Check if the song has a valid path
   if (currentSong.containsKey('path') && currentSong['path']!.isNotEmpty) {
-    if (isPlaying) {
-      await audioPlayer.pause();
-    } 
-    else {
+    setState(() {
+      isPlaying = !isPlaying;
+    });
+    if (isPlaying){
       // Set the audio source before playing
       try {
-        await audioPlayer.setAudioSource(AudioSource.file(currentSong['path']!));
+        audioPlayer.setAudioSource(AudioSource.file(currentSong['path']!));
         await audioPlayer.play();
       } catch (e) {
         print('Error playing audio: $e');
       }
     }
+    else{
+      await audioPlayer.pause();
+    } 
 
-    setState(() {
-      isPlaying = !isPlaying;
-    });
   } else {
     print('Invalid song path!');
   }
@@ -175,7 +175,7 @@ Future<void> addSong() async {
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.black,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       drawer: Drawer(
         child: Column(
@@ -203,7 +203,7 @@ Future<void> addSong() async {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text("Music Player"),
+                    title: const Text("Music Player"),
                     content: const Text('Music Player for Local System Done By Bharath.G AIML'),
                     actions: <Widget>[
                       TextButton(
